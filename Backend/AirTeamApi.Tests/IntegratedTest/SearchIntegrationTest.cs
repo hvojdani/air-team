@@ -40,14 +40,14 @@ namespace AirTeamApi.Tests.IntegratedTest
             Assert.IsTrue(response.IsSuccessStatusCode);
             var jArray = JArray.Parse(jsonResult);
 
-            Assert.AreEqual(25, jArray.Count);
+            Assert.AreEqual(50, jArray.Count);
 
             var firstItem = jArray[0].ToObject<ImageDto>();
             
             Assert.IsNotNull(firstItem);
-            Assert.AreEqual("353153", firstItem.ImageId);
-            Assert.AreEqual("Boeing 777-9X", firstItem.Title);
-            StringAssert.EndsWith(firstItem.BaseImageUrl, "pics/353/353153_200.jpg");
+            Assert.AreEqual("471380", firstItem.ImageId);
+            Assert.AreEqual("General Electric GE9X Engine", firstItem.Title);
+            StringAssert.EndsWith(firstItem.DetailUrl, "471380");
 
         }
     }

@@ -63,7 +63,7 @@ namespace AirTeamApi.Tests.UnitTest
 
             var resultImages = await airTeamController.Search(keyword);
 
-            Assert.AreEqual(25, resultImages.Count());
+            Assert.AreEqual(50, resultImages.Count());
             Assert.IsTrue(calledHttp);
             #endregion
 
@@ -81,7 +81,7 @@ namespace AirTeamApi.Tests.UnitTest
 
             resultImages = await airTeamController.Search(keyword);
 
-            Assert.AreEqual(25, resultImages.Count());
+            Assert.AreEqual(50, resultImages.Count());
             Assert.IsTrue(calledCache);
             #endregion
 
@@ -89,10 +89,10 @@ namespace AirTeamApi.Tests.UnitTest
             #region check result fields
 
             var firstItem = resultImages.First();
-            Assert.AreEqual("353153", firstItem.ImageId);
-            Assert.AreEqual("Boeing 777-9X", firstItem.Title);
+            Assert.AreEqual("471380", firstItem.ImageId);
+            Assert.AreEqual("General Electric GE9X Engine", firstItem.Title);
             Assert.IsFalse(string.IsNullOrWhiteSpace(firstItem.DetailUrl));
-            StringAssert.EndsWith(firstItem.BaseImageUrl, "pics/353/353153_200.jpg");
+            StringAssert.EndsWith(firstItem.DetailUrl, "_471380");
 
             #endregion
         }
