@@ -55,7 +55,7 @@ namespace AirTeamApi.Services.Impl
                 MetricsDefinition.ApiCallCachedTotal.WithLabels(Environment.MachineName).Inc();
             }
 
-            var imageHtmlNodes = _htmlParserService.QuerySelectorAll(htmlResponse, ".thumb");
+            var imageHtmlNodes = _htmlParserService.QuerySelectorAll(htmlResponse, "[data-photoid]");
             IEnumerable<ImageDto> images = imageHtmlNodes.Select(
                 node => GetImageFromNode(node, _airTeamHttpClient.BaseUrl));
 
@@ -72,7 +72,7 @@ namespace AirTeamApi.Services.Impl
             using CancellationTokenSource httpTokenSource = new(20000);
             var apiResponse = await _airTeamHttpClient.SearchByKeyword(searchString, httpTokenSource.Token);
 
-            var resultDivision = _htmlParserService.QuerySelector(apiResponse, "#lb-management-content");
+            var resultDivision = _htmlParserService.QuerySelector(apiResponse, "#photo-search-pane");
             var resultHtml = resultDivision.WriteTo();
 
             var cacheEntryOption = new DistributedCacheEntryOptions()
@@ -88,8 +88,8 @@ namespace AirTeamApi.Services.Impl
         private static ImageDto GetImageFromNode(HtmlNode node, Uri? baseUrl)
         {
             var image = new ImageDto
-            {
-                ImageId = node.QuerySelector(".id").InnerText.Replace("Image ID:", "", StringComparison.InvariantCultureIgnoreCase).Trim()
+            { 
+                ImageId = node.Attributes?["data-photoid"]?.Value?.Trim() ?? "0"
             };
 
             if (baseUrl is null)
@@ -98,10 +98,10 @@ namespace AirTeamApi.Services.Impl
             }
 
             var imageNode = node.QuerySelector("img");
-            image.Description = HttpUtility.HtmlDecode(imageNode.Attributes["alt"].Value);
-            image.BaseImageUrl = Combine(baseUrl.ToString(), imageNode.Attributes["src"].Value);
+            image.Description = "-";
+            image.BaseImageUrl = imageNode.Attributes["src"].Value;
 
-            image.Title = HttpUtility.HtmlDecode(node.QuerySelector("div:last-child").InnerHtml);
+            image.Title = node.QuerySelector("h3").InnerText?.Trim() ?? "no title";
             image.DetailUrl = Combine(baseUrl.ToString(), node.QuerySelector("a").Attributes["href"].Value);
 
             return image;

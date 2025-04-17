@@ -25,7 +25,7 @@ namespace AirTeamApi.Controllers.v1
         /// <param name="Message">simple text to log as warning message</param>
         /// <returns></returns>
         [HttpGet("logTest")]
-        public StatusCodeResult TestLog([Required(AllowEmptyStrings = false), MaxLength(100), RegularExpression(@"^[a-zA-Z0-9.,\-_]+$")] string message)
+        public StatusCodeResult TestLog([Required(AllowEmptyStrings = false), MaxLength(100), RegularExpression(@"^[a-zA-Z0-9.,\-_\s]+$")] string message)
         {
             _logger.LogWarning($"user log text is: ${message}");
             return StatusCode(201);
@@ -45,7 +45,7 @@ namespace AirTeamApi.Controllers.v1
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IEnumerable<ImageDto>> Search([MinLength(3), MaxLength(14), Required(AllowEmptyStrings = false), RegularExpression(@"^[a-zA-Z0-9.,\-_]+$"), FromQuery] string keyword)
+        public async Task<IEnumerable<ImageDto>> Search([MinLength(3), MaxLength(25), Required(AllowEmptyStrings = false), RegularExpression(@"^[a-zA-Z0-9.,\-_\s]+$"), FromQuery] string keyword)
         {
             if (keyword == null)
                 throw new ArgumentNullException(keyword);
